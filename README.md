@@ -13,7 +13,7 @@ The app also keeps a history of previous searches for easy reference.
 
 2. Demo
 
-[![Demo wideo](assets/pic.png)](https://www.loom.com/share/82ebb57003264609b92c7a045dafd741)
+[EvenOddFinder DEMO](https://www.loom.com/share/82ebb57003264609b92c7a045dafd741)
 
 
 3.  Tests
