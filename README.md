@@ -13,8 +13,8 @@ The app also keeps a history of previous searches for easy reference.
 
 2. Demo
 
-[![Demo wideo](<img width="577" height="818" alt="image" src="https://github.com/user-attachments/assets/57e87ab4-60ad-4020-9b0e-5c16e2e44ff1" />
-)](https://www.loom.com/share/82ebb57003264609b92c7a045dafd741)
+[![Demo wideo](assets/pic.png)](https://www.loom.com/share/82ebb57003264609b92c7a045dafd741)
+
 
 3.  Tests
 
