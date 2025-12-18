@@ -3,6 +3,7 @@ import 'screens/home_screen.dart';
 import 'services/outlier_finder.dart';
 import 'services/input_parser.dart';
 import 'services/history_service.dart';
+import 'services/find_outlier_service.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -12,6 +13,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final historyService = HistoryService();
+    final parser = InputParser();
+    final finder = OutlierFinder();
+
+    final findOutlierService = FindOutlierService(
+      parser: parser,
+      finder: finder,
+      history: historyService,
+    );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -19,9 +30,8 @@ class MyApp extends StatelessWidget {
       ),
 
       home: HomeScreen(
-        finder: OutlierFinder(),
-        parser: InputParser(),
-        history: HistoryService(),
+        findOutlierService: findOutlierService,
+        historyService: historyService,
       ),
     );
   }

@@ -5,17 +5,16 @@ import '../services/input_parser.dart';
 import '../services/history_service.dart';
 import '../models/history_item.dart';
 import '../widgets/history_widget.dart';
+import '../services/find_outlier_service.dart';
 
 class HomeScreen extends StatefulWidget {
-  final OutlierFinder finder;
-  final InputParser parser;
-  final HistoryService history;
+  final FindOutlierService findOutlierService;
+  final HistoryService historyService;
 
   const HomeScreen({
     super.key,
-    required this.finder,
-    required this.parser,
-    required this.history,
+    required this.findOutlierService,
+    required this.historyService,
   });
 
   @override
@@ -29,62 +28,44 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _findOutlier() {
     try {
-      final numbers = widget.parser.parse(_controller.text);
-      final outlier = widget.finder.findN(numbers);
+      final outlier = widget.findOutlierService.execute(
+        _controller.text,
+      );
 
       setState(() {
         _result = outlier;
-        widget.history.add(HistoryItem(numbers: numbers, outlier: outlier));
       });
 
       _historyKey.currentState?.scrollToTop();
 
     } on ArgumentError catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.message,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      _showError(e.message);
     } on StateError catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.message,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Błędne dane wejściowe!',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      _showError(e.message);
+    } catch (_) {
+      _showError('Błędne dane wejściowe!');
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+        ),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final historyItems = widget.history.items;
+    final historyItems = widget.historyService.items;
 
     return Scaffold(
       appBar: AppBar(title: const Text('EvenOddFinder')),
@@ -111,14 +92,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: _findOutlier,
-                  child: const Text('Wyszukaj', style: TextStyle(fontSize: 16)),
+                  child: const Text('Wyszukaj', style: TextStyle(fontSize: 16), textAlign: TextAlign.center,),
                 ),
               ),
               const SizedBox(height: 24),
               const Divider(),
-              const Text(
-                'Historia',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              const Center(
+                child: Text(
+                  'Historia',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(height: 8),
               SizedBox(
